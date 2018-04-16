@@ -46,6 +46,7 @@ void queue_start()
     }
     else
         logging::Info("queue_start: CTFPartyClient == null!");
+#endif
 }
 void queue_leave()
 {
