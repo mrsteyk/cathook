@@ -1024,11 +1024,10 @@ void LevelInit_hook(void *_this, const char *newmap)
         gSignatures.GetEngineSignature("55 89 E5 57 31 FF 56 8D B5 ? ? ? ? 53 "
                                        "81 EC ? ? ? ? C7 85 ? ? ? ? ? ? ? ?");
     static LoadNamedSkys_Fn LoadNamedSkys = LoadNamedSkys_Fn(addr);
-    bool succ;
-#ifdef __clang__
-    asm ("movl %1, %%edi; push skynum[(int) skybox_changer]; call %%edi; mov %%eax, %0; add %%esp, 4h" :"=r"(succ) :"r"(LoadNamedSkys));
-#else
-    succ = LoadNamedSkys(skynum[(int) skybox_changer]);
+if(!addr) logging::Info("moron");
+    int succ=0;
+#ifndef __clang__
+    succ = *LoadNamedSkys(skynum[(int) skybox_changer]);
 #endif
     logging::Info("Loaded Skybox: %s", succ ? "true" : "false");
     ConVar *holiday = g_ICvar->FindVar("tf_forced_holiday");

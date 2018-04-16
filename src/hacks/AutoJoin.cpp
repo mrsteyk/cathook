@@ -49,6 +49,7 @@ Timer autoqueue_timer{};
 
 void UpdateSearch()
 {
+#ifndef __clang__
     if (!auto_queue)
         return;
     if (g_IEngine->IsInGame())
@@ -65,6 +66,7 @@ void UpdateSearch()
             tfmm::queue_start();
         }
     }
+#endif
 }
 
 Timer timer{};

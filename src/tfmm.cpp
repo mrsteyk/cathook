@@ -20,6 +20,7 @@ static CatVar queue(queue_mode, "autoqueue_mode", "7",
                     "Autoqueue for this mode", "");
 
 CatCommand get_state("mm_state", "Get party state", []() {
+#ifndef __clang__
     re::CTFParty *party = re::CTFParty::GetParty();
     if (!party)
     {
@@ -27,6 +28,7 @@ CatCommand get_state("mm_state", "Get party state", []() {
         return;
     }
     logging::Info("State: %d", re::CTFParty::state_(party));
+#endif
 });
 
 namespace tfmm
@@ -34,11 +36,14 @@ namespace tfmm
 
 void queue_start()
 {
+#ifndef __clang__
     re::CTFPartyClient *client = re::CTFPartyClient::GTFPartyClient();
     if (client)
     {
+logging::Info("criteria");
         if (queue == 7)
             client->LoadSavedCasualCriteria();
+logging::Info("queue");
         client->RequestQueueForMatch((int) queue);
     }
     else
@@ -46,19 +51,23 @@ void queue_start()
 }
 void queue_leave()
 {
+#ifndef __clang__
     re::CTFPartyClient *client = re::CTFPartyClient::GTFPartyClient();
     if (client)
         client->RequestLeaveForMatch((int) queue);
     else
         logging::Info("queue_start: CTFPartyClient == null!");
+#endif
 }
 
 void abandon()
 {
+#ifndef __clang__
     re::CTFGCClientSystem *gc = re::CTFGCClientSystem::GTFGCClientSystem();
     if (gc != nullptr)
         gc->AbandonCurrentMatch();
     else
         logging::Info("abandon: CTFGCClientSystem == null!");
+#endif
 }
 }
