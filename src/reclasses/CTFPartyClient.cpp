@@ -61,8 +61,15 @@ int re::CTFPartyClient::LoadSavedCasualCriteria()
         "55 89 E5 83 EC ? 8B 45 ? 8B 50 ? C6 80 ? ? ? ? ?");
     LoadSavedCasualCriteria_t LoadSavedCasualCriteria_fn =
         LoadSavedCasualCriteria_t(addr);
-
+//#ifdef __clang__
+//int ret;
+//asm volatile ("movl %[func], %%edi; pushl %[dis]; call *%%edi;  addl $4, %%esp; movl %%eax, %0" :"=r"(ret) :[func]"r"(addr), [dis]"r"(this) :"%edi", "%eax", "%esp");
+//return ret;
+//asm volatile ("pushl %%edi; subl $4, %%ebp":::"%ebp"); //workaround
+//return LoadSavedCasualCriteria_fn(this);
+//#else
     return LoadSavedCasualCriteria_fn(this);
+//#endif
 }
 
 char re::CTFPartyClient::RequestQueueForMatch(int type)
@@ -72,8 +79,13 @@ char re::CTFPartyClient::RequestQueueForMatch(int type)
         "55 89 E5 57 56 53 81 EC ? ? ? ? 8B 75 ? 89 F0");
     RequestQueueForMatch_t RequestQueueForMatch_fn =
         RequestQueueForMatch_t(addr);
-
+#ifdef __clang__
+int ret;
+asm volatile ("movl %[func], %%edi; subl $8, %%esp; pushl %[type]; pushl %[dis]; call *%%edi; movl %%eax, %0; addl $16, %%esp" :"=r"(ret) :[func]"r"(addr), [dis]"r"(this), [type]"r"(type) :"%edi", "%eax", "%esp");
+return ret;
+#else
     return RequestQueueForMatch_fn(this, type);
+#endif
 }
 char re::CTFPartyClient::RequestLeaveForMatch(int type)
 {
@@ -83,6 +95,11 @@ char re::CTFPartyClient::RequestLeaveForMatch(int type)
         "? ? 84 C0 89 C6 75 ?");
     RequestLeaveForMatch_t RequestLeaveForMatch_fn =
         RequestLeaveForMatch_t(addr);
-
+#ifdef __clang__
+int ret;
+asm volatile ("movl %[func], %%edi; pushl %[type]; pushl %[dis]; call *%%edi; movl %%eax, %0; addl $8, %%esp" :"=r"(ret) :[func]"r"(addr), [dis]"r"(this), [type]"r"(type) :"%edi", "%eax", "%esp");
+return ret;
+#else
     return RequestLeaveForMatch_fn(this, type);
+#endif
 }

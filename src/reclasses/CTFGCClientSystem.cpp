@@ -33,7 +33,11 @@ void CTFGCClientSystem::AbandonCurrentMatch()
     {
         logging::Info("calling NULL!");
     }
+#ifdef __clang__
+asm volatile ("movl %[func], %%edi; pushl %[dis]; call *%%edi; add %%esp, 4h" : :[func]"r"(AbandonCurrentMatch_fn), [dis]"r"(this) :"%edi", "%eax");
+#else
     AbandonCurrentMatch_fn(this);
+#endif
 }
 
 bool CTFGCClientSystem::BConnectedToMatchServer(bool flag)
@@ -43,8 +47,14 @@ bool CTFGCClientSystem::BConnectedToMatchServer(bool flag)
         gSignatures.GetClientSignature("55 89 E5 53 80 7D ? ? 8B 55 ? 75 ?");
     static BConnectedToMatchServer_t BConnectedToMatchServer_fn =
         BConnectedToMatchServer_t(addr);
-
+#ifdef __clang__
+int ret;
+int ff = flag; // im paranoic
+asm volatile ("movl %[func], %%edi; pushl %[flag]; pushl %[dis]; call *%%edi; movl %%eax, %0; add %%esp, 8h" :"=r"(ret) :[func]"r"(BConnectedToMatchServer_fn), [dis]"r"(this), [flag]"r"(ff) :"%edi", "%eax"); //idk if it should be 8 // should(???) since i use long instead of byte _)
+return ret;
+#else
     return BConnectedToMatchServer_fn(this, flag);
+#endif
 }
 
 bool CTFGCClientSystem::BHaveLiveMatch()

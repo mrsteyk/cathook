@@ -100,7 +100,7 @@ CXXFLAGS+=$(WARNING_FLAGS)
 endif
 
 ifeq ($(ENABLE_VISUALS),1)
-LDLIBS+=-lssl -l:libSDL2-2.0.so.0 -l:libGLEW.so -lglez -lxoverlay
+LDLIBS+=-l:libssl.so.1.0.0 -l:libSDL2-2.0.so.0 -l:libGLEW.so -l:libglez.so -l:libxoverlay.so -L/lib/i386-linux-gnu
 CXXFLAGS+=$(shell sdl2-config --cflags)
 CFLAGS+=$(shell sdl2-config --cflags)
 else
